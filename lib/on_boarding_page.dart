@@ -2,10 +2,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_onboarding_ui/home_page.dart';
 import 'package:introduction_screen/introduction_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class OnBoardingPage extends StatelessWidget {
+class OnBoardingPage extends StatefulWidget {
   OnBoardingPage({Key? key}) : super(key: key);
 
+  @override
+  State<OnBoardingPage> createState() => _OnBoardingPageState();
+}
+
+class _OnBoardingPageState extends State<OnBoardingPage> {
+
+  late SharedPreferences pref;
+
+  @override
+  void initState() {   
+    super.initState();
+    initSharedPref();
+  }
+
+  void initSharedPref() async  {
+    pref = await SharedPreferences.getInstance();
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -53,7 +71,8 @@ class OnBoardingPage extends StatelessWidget {
         ],
         next: const Icon(Icons.arrow_forward),
         done: const Text('Done',style: TextStyle(fontSize: 16.0,color: Colors.redAccent),),
-        onDone: () {
+        onDone: () async {
+          await pref.setBool('ON_BOARDING', false);
           Navigator.push(context, MaterialPageRoute(builder: (_) => const HomePage()),);
         },
         skipOrBackFlex: 0,
